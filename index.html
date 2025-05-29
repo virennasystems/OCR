@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>VIRENNA OCR Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background: #fefefe; color: #222; }
+    #output { white-space: pre-wrap; border: 1px solid #ccc; padding: 1em; margin-top: 1em; background: #f9f9f9; }
+    input[type="file"] { margin-top: 1em; }
+    button { margin-top: 1em; padding: 0.5em 1em; }
+  </style>
+</head>
+<body>
+  <h1>🧠 VIRENNA OCR Demo</h1>
+  <p>Wähle ein Bild mit Text (z. B. Screenshot eines Formulars):</p>
+  <input type="file" id="fileInput" accept="image/*">
+  <button onclick="runOCR()">OCR starten</button>
+  <div id="output">Erkannter Text erscheint hier…</div>
+
+  <script>
+    function runOCR() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return alert("Bitte ein Bild auswählen.");
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        Tesseract.recognize(reader.result, 'deu', {
+          logger: m => console.log(m)
+        }).then(({ data: { text } }) => {
+          document.getElementById('output').textContent = text;
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>
